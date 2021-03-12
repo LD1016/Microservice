@@ -7,7 +7,9 @@ export default ({postId}) => {
     const onFormSubmit = async (event) => {
         event.preventDefault();
 
-        await axios.post(`http://localhost:4001/posts/${postId}/comments`, {content}
+        // await axios.post(`http://localhost:4001/posts/${postId}/comments`, {content}
+        // posts.com got created in ingress-controller (ingress-srv.yaml)
+        await axios.post(`http://posts.com/posts/${postId}/comments`, {content}
             
         );
         

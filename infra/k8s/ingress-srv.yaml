@@ -1,0 +1,38 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  # annotations help ingress controller understand we try to feed
+  # some routing rules
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    # allow to use regex in this file
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+    # type code /etc/hosts for MAC to go to your local hosts (HOST FILE LOCATION)
+    # C:\Windows\System32\Drivers\etc\hosts for Windows
+    - host: posts.com
+      http:
+        paths:
+          - path: /posts/create
+            # get from posts-depl.yaml
+            backend:
+              serviceName: posts-clusterip-srv
+              servicePort: 4000
+          - path: /posts
+            backend:
+              serviceName: query-srv
+              servicePort: 4002
+          # ingress not understand of /posts/:id/comments
+          # so we have to use regex
+          - path: /posts/?(.*)/comments
+            backend:
+              serviceName: comments-srv
+              servicePort: 4001
+          # if the react have any other route
+          # Also this path must be at the end
+          - path: /?(.*)
+            backend:
+              serviceName: client-srv
+              servicePort: 3000

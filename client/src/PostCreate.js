@@ -9,7 +9,10 @@ export default () => {
     const onFormSubmit = async (event) => {
         event.preventDefault();
 
-        await axios.post('http://localhost:4000/posts', {
+        // await axios.post('http://localhost:4000/posts', {
+        // await axios.post('http://posts.com/posts', {
+        // Have to change the path because Ingress Controller need to know unique route paths
+        await axios.post('http://posts.com/posts/create', {
             title
         });
         setTitle('');

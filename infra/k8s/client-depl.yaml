@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-depl
+spec:
+  replicas: 1
+  # Selector job is take a look at all the pods created with label app: client to manage
+  selector:
+    matchLabels:
+      app: client
+  # template tell the deployment that the pod need to create
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+        - name: client
+          image: dex1/client:latest
+
+# Three dash (---) is the way to create multiple object in a single yaml file
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-srv
+spec:
+  # if we don't provide k8s will have the default of (type: ClusterIP)
+  type: ClusterIP
+  selector:
+    app: client
+  ports:
+    - name: client
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

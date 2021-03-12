@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: query-depl
+spec:
+  replicas: 1
+  # Selector job is take a look at all the pods created with label app: query to manage
+  selector:
+    matchLabels:
+      app: query
+  # template tell the deployment that the pod need to create
+  template:
+    metadata:
+      labels:
+        app: query
+    spec:
+      containers:
+        - name: query
+          image: dex1/query:latest
+
+# Three dash (---) is the way to create multiple object in a single yaml file
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: query-srv
+spec:
+  # if we don't provide k8s will have the default of (type: ClusterIP)
+  type: ClusterIP
+  selector:
+    app: query
+  ports:
+    - name: query
+      protocol: TCP
+      port: 4002
+      targetPort: 4002

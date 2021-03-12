@@ -1,0 +1,70 @@
+# Skaffold is for Development purpose
+apiVersion: skaffold/v2alpha3
+kind: Config
+deploy:
+  # tell skaffold that there are many files in ./infra/k8s/* to watch
+  # any time it see a change it will reapply to k8s cluster
+  # when skaffold start those files will create objects in k8s cluster (pods and other)
+  # when something change it will reapply
+  # when skaffold stop those files will delete objects in k8s cluster
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+
+build:
+  # whenever skaffold rebuild the image it will try to push to docker hub
+  # which we don't want
+  local:
+    push: false
+  # artifacts is tell skaffold that something in the project that need to be mantain
+  # there a client pod if something change in client directory (*.js file or add new dependency)
+  # skaffold will try to update client pod
+  artifacts:
+    - image: dex1/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.js'
+            dest: .
+    - image: dex1/comments
+      context: comments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: dex1/event-bus
+      context: event-bus
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: dex1/moderation
+      context: moderation
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: dex1/posts
+      context: posts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: dex1/query
+      context: query
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .

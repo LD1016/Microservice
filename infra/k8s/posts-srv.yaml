@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: posts-srv
+spec:
+  # There four types of Services
+  # Cluster IP : connect pod to pod in the cluster
+  # Node Port: (for development purpose) makes a pod accessible from outside the cluster
+  # Load Balancer: makes a pod accessible from outside the cluster (to outside world)
+  # External Name: Redirects an in-cluster request to a CNAME url (don't wory about this one)
+  type: NodePort
+  # Selector will find all the pods with app: posts to makes that pods accessible from outside world
+  selector:
+    app: posts
+  # expose the port to outside world
+  ports:
+    #  Name just for log purpose, can be anything
+    - name: posts
+      protocol: TCP
+      # Port that outsite to connect to Nodeport Service can be anything (ex: 5000)
+      port: 4000
+      # Targetport is the port that we want to send traffic to
+      targetPort: 4000
